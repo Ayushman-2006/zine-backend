@@ -72,4 +72,6 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "sentFrom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InstanceLinks> instanceLinks = new ArrayList<>();
+
+
 }

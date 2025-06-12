@@ -135,7 +135,8 @@ public class UserService {
         verificationToken.setCreatedTimestamp(new Timestamp(System.currentTimeMillis()));
         verificationToken.setUser(user);
 
-        user.getVerificationTokens().add(verificationToken); // adds token to the list
+        user.getVerificationTokens().add(verificationToken);// adds token to the list
+        System.out.println("Verification Token = " + verificationToken);
         return verificationToken;
     }
 
