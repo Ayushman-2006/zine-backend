@@ -70,7 +70,7 @@ public class InventoryItemService {
                 .map(existing -> {
                     existing.setName(updatedInventory.getName());
                     existing.setCount(updatedInventory.getCount());
-                    existing.setPrice(updatedInventory.getPrice());
+
 
                     // Set the managed category
                     existing.setCategory(managedCategory);

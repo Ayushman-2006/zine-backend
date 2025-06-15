@@ -1,9 +1,9 @@
 package com.dev.zine.api.controllers.inventory;
 
-
 import com.dev.zine.model.InventoryItems;
 import com.dev.zine.service.InventoryItemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,45 +14,71 @@ import java.util.Optional;
 public class InventoryItemController {
 
     @Autowired
-    public InventoryItemService inventoryService;
+    private InventoryItemService inventoryService;
 
     @GetMapping
-    public List<InventoryItems> getAllItems(){
-        return inventoryService.getAllItems();
+    public ResponseEntity<?> getAllItems() {
+        try {
+            List<InventoryItems> items = inventoryService.getAllItems();
+            return ResponseEntity.ok(items);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Failed to fetch items: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
-    public Optional<InventoryItems> getItemById(@PathVariable Long id) {
-        return inventoryService.getItemById(id);
+    public ResponseEntity<?> getItemById(@PathVariable Long id) {
+        try {
+            Optional<InventoryItems> item = inventoryService.getItemById(id);
+            if (item.isPresent()) {
+                return ResponseEntity.ok(item.get());
+            } else {
+                return ResponseEntity.status(404).body("Item not found with ID: " + id);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Failed to fetch item: " + e.getMessage());
+        }
     }
 
     @GetMapping("/category/{category}")
-    public List<InventoryItems> getItemByCategory(@PathVariable String category){
-        return inventoryService.getItemByCategory(category);
+    public ResponseEntity<?> getItemByCategory(@PathVariable String category) {
+        try {
+            List<InventoryItems> items = inventoryService.getItemByCategory(category);
+            return ResponseEntity.ok(items);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Failed to fetch items by category: " + e.getMessage());
+        }
     }
 
     @PostMapping("/item")
-    public InventoryItems addItem(@RequestBody InventoryItems inventory) {
-        return inventoryService.addItem(inventory);
+    public ResponseEntity<?> addItem(@RequestBody InventoryItems inventory) {
+        try {
+            InventoryItems saved = inventoryService.addItem(inventory);
+            return ResponseEntity.ok(saved);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Failed to add item: " + e.getMessage());
+        }
     }
 
     @PutMapping("/item/{id}")
-    public InventoryItems updateItem(@PathVariable Long id,@RequestBody InventoryItems inventory) {
-        return inventoryService.updateItem(id,inventory);
+    public ResponseEntity<?> updateItem(@PathVariable Long id, @RequestBody InventoryItems inventory) {
+        try {
+            InventoryItems updated = inventoryService.updateItem(id, inventory);
+            return ResponseEntity.ok(updated);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Failed to update item: " + e.getMessage());
+        }
     }
-
-
 
     @DeleteMapping("/{id}")
-    public void deleteItem(@PathVariable Long id) {
-        inventoryService.deleteItem(id);
+    public ResponseEntity<?> deleteItem(@PathVariable Long id) {
+        try {
+            inventoryService.deleteItem(id);
+            return ResponseEntity.ok("Item deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Failed to delete item: " + e.getMessage());
+        }
     }
-
-
-
-
-
-
-
-
 }
